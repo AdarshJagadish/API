@@ -157,17 +157,47 @@ from rest_framework import generics,mixins
 #     **************************************  API_VIEW CLASS  *****************************
 # \-------------------------------------------------------------------------------------------/
 
-class fun1(APIView):
-    def get(self,request):
-       demo=stud.objects.all()
-       s=studModelSerializer(demo,many=True)
-       return Response(s.data)
-    def post(self,request):
-        s=studModelSerializer(data=request.data)
-        if s.is_valid():
-            s.save()
-            return JsonResponse(s.data,status=status.HTTP_201_CREATED)
-        else:
-            return JsonResponse(status=status.HTTP_400_BAD_REQUEST)
+# class fun1(APIView):
+#     def get(self,request):
+#        demo=stud.objects.all()
+#        s=studModelSerializer(demo,many=True)
+#        return Response(s.data)
+#     def post(self,request):
+#         s=studModelSerializer(data=request.data)
+#         if s.is_valid():
+#             s.save()
+#             return JsonResponse(s.data,status=status.HTTP_201_CREATED)
+#         else:
+#             return JsonResponse(status=status.HTTP_400_BAD_REQUEST)
+        
+        
 
+class fun1(APIView):
+    def get(self,request,pk):
+        try:
+            demo=stud.objects.get(pk=pk)
+            s=studModelSerializer(demo)
+            return Response(s.data)
+        except stud.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+    def put(self,request,pk):
+        try:
+            demo=stud.objects.get(pk=pk)
+            s=studModelSerializer(demo,data=request.data)
+            if s.is_valid():
+                s.save()
+                return Response(s.data)
+            else:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+        except stud.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+    def delete(self,request,pk):
+        try:
+            demo=stud.objects.get(pk=pk)
+            demo.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        
 # Create your views here.
